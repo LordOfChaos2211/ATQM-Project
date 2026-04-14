@@ -79,9 +79,10 @@ public class Protoframe  implements ActionListener{
     JTextField lowerLimIn;
     JTextField meanIn;
 
-    DefaultXYDataset coordinates;
+    XYSeriesCollection coords;
     JFreeChart chartGenerator;
     ChartPanel chartHolder = new ChartPanel(null);
+    XYSeries series;
 
     ValueMarker UCL;
     ValueMarker LCL;
@@ -92,10 +93,7 @@ public class Protoframe  implements ActionListener{
         float[] dashPattern = {2.0f, 6.0f};
         BasicStroke dottedLine = new BasicStroke(2.0f,BasicStroke.CAP_ROUND,BasicStroke.JOIN_ROUND,1.0f,dashPattern,0.0f);
 
-        coordinates = new DefaultXYDataset();
-        chartGenerator = ChartFactory.createXYLineChart("","","", coordinates);
-        chartHolder.setChart(chartGenerator);
-
+        coords = new XYSeriesCollection();
 
         UCL = new ValueMarker(5.0);
         UCL.setPaint(Color.red);
@@ -248,7 +246,11 @@ public class Protoframe  implements ActionListener{
                 if(validateFile(file.getAbsolutePath())){
                     try{
                         double[][] rawCoords = extractCoords(Files.readString(Path.of(file.getAbsolutePath())));
-                        coordinates.addSeries(datasetName.getText(),rawCoords);
+                        series = new XYSeries(datasetName.getText());
+                        for(int i = 0; i < rawCoords[0].length; i++){
+                            series.add(rawCoords[0][i],rawCoords[1][i]);
+                        }
+                        coords.addSeries(series);
                         JOptionPane.showMessageDialog(null,"Dataset successfully imported","Successful import",JOptionPane.INFORMATION_MESSAGE);
                     }
                     catch (Exception ex) {
@@ -258,7 +260,7 @@ public class Protoframe  implements ActionListener{
             }
         }
         else if(e.getSource() == createChart){
-            chartGenerator = ChartFactory.createXYLineChart(chartTitle.getText(),XTitle.getText(),YTitle.getText(),coordinates);
+            chartGenerator = ChartFactory.createXYLineChart(chartTitle.getText(),XTitle.getText(),YTitle.getText(),null);
             chartHolder.setChart(chartGenerator);
             chartHolder.repaint();
             content.repaint();
@@ -277,6 +279,7 @@ public class Protoframe  implements ActionListener{
             west.add(datapointPrompt);
             west.add(datapoint);
             west.add(addPoint);
+            west.add(clearChart);
             west.revalidate();
             west.repaint();
         }
@@ -285,22 +288,34 @@ public class Protoframe  implements ActionListener{
                 UCL.setValue(Double.parseDouble(upperLimIn.getText()));
                 LCL.setValue(Double.parseDouble(lowerLimIn.getText()));
                 Mean.setValue(Double.parseDouble(meanIn.getText()));
-                chartGenerator = ChartFactory.createXYLineChart(chartTitle.getText(),XTitle.getText(),YTitle.getText(),coordinates);
+                chartGenerator = ChartFactory.createXYLineChart(chartTitle.getText(),XTitle.getText(),YTitle.getText(),coords);
                 chartHolder.setChart(chartGenerator);
                 XYPlot plot = chartGenerator.getXYPlot();
                 plot.addRangeMarker(UCL);
                 plot.addRangeMarker(LCL);
                 plot.addRangeMarker(Mean);
+                datasetName.setText("");
+                upperLimIn.setText("");
+                lowerLimIn.setText("");
+                meanIn.setText("");
             }
             catch(Exception ex){
                 JOptionPane.showMessageDialog(null,"Invalid input detected, please check your inputs", "Input error",JOptionPane.ERROR_MESSAGE);
             }
         }
         else if(e.getSource() == addPoint){
+            double [][] rawCoords = extractCoords(datapoint.getText());
+            for(int i = 0; i < rawCoords[0].length;i++){
+                series.add(rawCoords[0][i],rawCoords[1][i]);
+            }
 
         }
         else if(e.getSource() == clearChart){
-
+            coords.removeAllSeries();
+            XYPlot plot = chartGenerator.getXYPlot();
+            plot.removeRangeMarker(UCL);
+            plot.removeRangeMarker(LCL);
+            plot.removeRangeMarker(Mean);
         }
     }
 }
