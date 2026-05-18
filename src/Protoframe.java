@@ -3,6 +3,7 @@ import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.ValueMarker;
 import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.ui.Layer;
 import org.jfree.data.xy.*;
 import javax.swing.*;
 import java.awt.*;
@@ -11,6 +12,7 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Objects;
 import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 
@@ -69,6 +71,9 @@ public class Protoframe  implements ActionListener{
     JButton clearChart;
     JButton createChart;
     JButton addData;
+    JButton setUCL;
+    JButton setLCL;
+    JButton setMean;
 
     JTextField XTitle;
     JTextField YTitle;
@@ -78,6 +83,9 @@ public class Protoframe  implements ActionListener{
     JTextField upperLimIn;
     JTextField lowerLimIn;
     JTextField meanIn;
+    JTextField adjustUCL;
+    JTextField adjustLCL;
+    JTextField adjustMean;
 
     XYSeriesCollection coords;
     JFreeChart chartGenerator;
@@ -169,6 +177,20 @@ public class Protoframe  implements ActionListener{
         addData.setFocusable(false);
         addData.addActionListener(this);
 
+        setUCL = new JButton("Update UCL");
+        setUCL.setFont(new Font("Times New Roman",Font.PLAIN,20));
+        setUCL.setFocusable(false);
+        setUCL.addActionListener(this);
+
+        setLCL = new JButton("Update LCL");
+        setLCL.setFont(new Font("Times New Roman",Font.PLAIN,20));
+        setLCL.setFocusable(false);
+        setLCL.addActionListener(this);
+
+        setMean = new JButton("Update Mean");
+        setMean.setFont(new Font("Times New Roman",Font.PLAIN,20));
+        setMean.setFocusable(false);
+        setMean.addActionListener(this);
 
         XTitle = new JTextField();
         XTitle.setFont(new Font("Times New Roman",Font.PLAIN,20));
@@ -202,6 +224,18 @@ public class Protoframe  implements ActionListener{
         meanIn.setFont(new Font("Times New Roman",Font.PLAIN,20));
         meanIn.setPreferredSize(new Dimension(400,30));
 
+        adjustUCL = new JTextField();
+        adjustUCL.setFont(new Font("Times New Roman",Font.PLAIN,20));
+        adjustUCL.setPreferredSize(new Dimension(400,30));
+
+        adjustLCL = new JTextField();
+        adjustLCL.setFont(new Font("Times New Roman",Font.PLAIN,20));
+        adjustLCL.setPreferredSize(new Dimension(400,30));
+
+        adjustMean = new JTextField();
+        adjustMean.setFont(new Font("Times New Roman",Font.PLAIN,20));
+        adjustMean.setPreferredSize(new Dimension(400,30));
+
         west = new JPanel();
         west.setPreferredSize(new Dimension(480,480));
         //west.setBackground(Color.BLUE);
@@ -219,7 +253,7 @@ public class Protoframe  implements ActionListener{
 
         south = new JPanel();
         south.setPreferredSize(new Dimension(270,270));
-        south.setBackground(Color.red);
+        //south.setBackground(Color.red);
 
 
 
@@ -260,40 +294,113 @@ public class Protoframe  implements ActionListener{
             }
         }
         else if(e.getSource() == createChart){
-            chartGenerator = ChartFactory.createXYLineChart(chartTitle.getText(),XTitle.getText(),YTitle.getText(),null);
-            chartHolder.setChart(chartGenerator);
-            chartHolder.repaint();
-            content.repaint();
-            west.removeAll();
-            west.add(importPrompt);
-            west.add(setImport);
-            west.add(datasetPrompt);
-            west.add(datasetName);
-            west.add(upperTitle);
-            west.add(upperLimIn);
-            west.add(lowerTitle);
-            west.add(lowerLimIn);
-            west.add(meanTitle);
-            west.add(meanIn);
-            west.add(addData);
-            west.add(datapointPrompt);
-            west.add(datapoint);
-            west.add(addPoint);
-            west.add(clearChart);
-            west.revalidate();
-            west.repaint();
+            if(chartTitle.getText().isEmpty()||XTitle.getText().isEmpty()||YTitle.getText().isEmpty()){
+               int response = JOptionPane.showConfirmDialog(null,"You currently left some important fields empty. Are you sure you want to proceed?","Input warning",JOptionPane.YES_NO_OPTION);
+               if(response == 0){
+                   chartGenerator = ChartFactory.createXYLineChart(chartTitle.getText(), XTitle.getText(), YTitle.getText(), null);
+                   chartHolder.setChart(chartGenerator);
+                   chartHolder.repaint();
+                   content.repaint();
+                   west.removeAll();
+                   west.add(importPrompt);
+                   west.add(setImport);
+                   west.add(datasetPrompt);
+                   west.add(datasetName);
+                   west.add(upperTitle);
+                   west.add(upperLimIn);
+                   west.add(lowerTitle);
+                   west.add(lowerLimIn);
+                   west.add(meanTitle);
+                   west.add(meanIn);
+                   west.add(addData);
+                   west.add(datapointPrompt);
+                   west.add(datapoint);
+                   west.add(addPoint);
+                   west.add(clearChart);
+                   south.add(setUCL);
+                   south.add(adjustUCL);
+                   south.add(setLCL);
+                   south.add(adjustLCL);
+                   south.add(setMean);
+                   south.add(adjustMean);
+                   south.revalidate();
+                   south.repaint();
+                   west.revalidate();
+                   west.repaint();
+               }
+            }
+            else{
+                chartGenerator = ChartFactory.createXYLineChart(chartTitle.getText(), XTitle.getText(), YTitle.getText(), null);
+                chartHolder.setChart(chartGenerator);
+                chartHolder.repaint();
+                content.repaint();
+                west.removeAll();
+                west.add(importPrompt);
+                west.add(setImport);
+                west.add(datasetPrompt);
+                west.add(datasetName);
+                west.add(upperTitle);
+                west.add(upperLimIn);
+                west.add(lowerTitle);
+                west.add(lowerLimIn);
+                west.add(meanTitle);
+                west.add(meanIn);
+                west.add(addData);
+                west.add(datapointPrompt);
+                west.add(datapoint);
+                west.add(addPoint);
+                west.add(clearChart);
+                south.add(setUCL);
+                south.add(adjustUCL);
+                south.add(setLCL);
+                south.add(adjustLCL);
+                south.add(setMean);
+                south.add(adjustMean);
+                south.revalidate();
+                south.repaint();
+                west.revalidate();
+                west.repaint();
+            }
         }
         else if(e.getSource() == addData){
             try{
-                UCL.setValue(Double.parseDouble(upperLimIn.getText()));
-                LCL.setValue(Double.parseDouble(lowerLimIn.getText()));
-                Mean.setValue(Double.parseDouble(meanIn.getText()));
+                XYPlot plot = chartGenerator.getXYPlot();
+                if(Objects.equals(upperLimIn.getText(), "")){
+                    if(JOptionPane.showConfirmDialog(null, "The value of the upper control limit is missing. Do you want to continue?","Input error",JOptionPane.YES_NO_OPTION) != 0){
+                        throw new RuntimeException();
+                    }
+                }
+                    else{
+                        UCL.setValue(Double.parseDouble(upperLimIn.getText()));
+                        plot.addRangeMarker(UCL);
+                }
+                if(Objects.equals(lowerLimIn.getText(), "")){
+                    if(JOptionPane.showConfirmDialog(null, "The value of the lower control limit is missing. Do you want to continue?","Input error",JOptionPane.YES_NO_OPTION) != 0){
+                        throw new RuntimeException();
+                    }
+                }
+                else{
+                    LCL.setValue(Double.parseDouble(lowerLimIn.getText()));
+                    plot.addRangeMarker(LCL);
+                }
+                if(Objects.equals(meanIn.getText(), "")){
+                    if(JOptionPane.showConfirmDialog(null, "The value of the mean is missing. Do you want to continue?","Input error",JOptionPane.YES_NO_OPTION) != 0){
+                        throw new RuntimeException();
+                    }
+                }
+                else{
+                    Mean.setValue(Double.parseDouble(meanIn.getText()));
+                    plot.addRangeMarker(Mean);
+                }
+                if(coords.getSeriesCount()<1){
+                    if(JOptionPane.showConfirmDialog(null,"You appear to have not imported a dataset. Do you wish to continue?","Input error",JOptionPane.YES_NO_OPTION) == 0){
+                        series = new XYSeries(datasetName.getText());
+                        coords.addSeries(series);
+                    }
+                    else throw new RuntimeException();
+                }
                 chartGenerator = ChartFactory.createXYLineChart(chartTitle.getText(),XTitle.getText(),YTitle.getText(),coords);
                 chartHolder.setChart(chartGenerator);
-                XYPlot plot = chartGenerator.getXYPlot();
-                plot.addRangeMarker(UCL);
-                plot.addRangeMarker(LCL);
-                plot.addRangeMarker(Mean);
                 datasetName.setText("");
                 upperLimIn.setText("");
                 lowerLimIn.setText("");
@@ -305,10 +412,15 @@ public class Protoframe  implements ActionListener{
         }
         else if(e.getSource() == addPoint){
             double [][] rawCoords = extractCoords(datapoint.getText());
-            for(int i = 0; i < rawCoords[0].length;i++){
-                series.add(rawCoords[0][i],rawCoords[1][i]);
+            datapoint.setText("");
+            if(rawCoords[0].length == 0){
+                JOptionPane.showMessageDialog(null,"No valid input detected", "Input error",JOptionPane.INFORMATION_MESSAGE);
             }
-
+            else {
+                for (int i = 0; i < rawCoords[0].length; i++) {
+                    series.add(rawCoords[0][i], rawCoords[1][i]);
+                }
+            }
         }
         else if(e.getSource() == clearChart){
             coords.removeAllSeries();
@@ -316,6 +428,45 @@ public class Protoframe  implements ActionListener{
             plot.removeRangeMarker(UCL);
             plot.removeRangeMarker(LCL);
             plot.removeRangeMarker(Mean);
+        }
+        else if(e.getSource() == setUCL){
+            try{
+                XYPlot plot = chartGenerator.getXYPlot();
+                if(plot.getRangeMarkers(Layer.FOREGROUND) == null || !plot.getRangeMarkers(Layer.FOREGROUND).contains(UCL)) plot.addRangeMarker(UCL);
+                double input = Double.parseDouble(adjustUCL.getText());
+                adjustUCL.setText("");
+                UCL.setValue(input);
+            }
+            catch(Exception ex){
+                JOptionPane.showMessageDialog(null,"Invalid input detected. Please input numbers only","Input error",JOptionPane.ERROR_MESSAGE);
+                adjustUCL.setText("");
+            }
+        }
+        else if(e.getSource() == setLCL){
+            try{
+                XYPlot plot = chartGenerator.getXYPlot();
+                if(plot.getRangeMarkers(Layer.FOREGROUND) == null || !plot.getRangeMarkers(Layer.FOREGROUND).contains(LCL)) plot.addRangeMarker(LCL);
+                double input = Double.parseDouble(adjustLCL.getText());
+                adjustLCL.setText("");
+                LCL.setValue(input);
+            }
+            catch(Exception ex){
+                JOptionPane.showMessageDialog(null,"Invalid input detected. Please input numbers only","Input error",JOptionPane.ERROR_MESSAGE);
+                adjustLCL.setText("");
+            }
+        }
+        else if(e.getSource() == setMean){
+            try{
+                XYPlot plot = chartGenerator.getXYPlot();
+                if(plot.getRangeMarkers(Layer.FOREGROUND) == null || !plot.getRangeMarkers(Layer.FOREGROUND).contains(Mean)) plot.addRangeMarker(Mean);
+                double input = Double.parseDouble(adjustMean.getText());
+                adjustMean.setText("");
+                Mean.setValue(input);
+            }
+            catch(Exception ex){
+                JOptionPane.showMessageDialog(null,"Invalid input detected. Please input numbers only","Input error",JOptionPane.ERROR_MESSAGE);
+                adjustMean.setText("");
+            }
         }
     }
 }
