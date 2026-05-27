@@ -246,15 +246,15 @@ public class Protoframe  implements ActionListener {
 
         adjustUCL = new JTextField();
         adjustUCL.setFont(new Font("Times New Roman", Font.PLAIN, 20));
-        adjustUCL.setPreferredSize(new Dimension(400, 30));
+        adjustUCL.setPreferredSize(new Dimension(450, 30));
 
         adjustLCL = new JTextField();
         adjustLCL.setFont(new Font("Times New Roman", Font.PLAIN, 20));
-        adjustLCL.setPreferredSize(new Dimension(400, 30));
+        adjustLCL.setPreferredSize(new Dimension(450, 30));
 
         adjustMean = new JTextField();
         adjustMean.setFont(new Font("Times New Roman", Font.PLAIN, 20));
-        adjustMean.setPreferredSize(new Dimension(400, 30));
+        adjustMean.setPreferredSize(new Dimension(450, 30));
 
         titleField = new JTextField();
         titleField.setFont(new Font("Times New Roman", Font.PLAIN, 20));
