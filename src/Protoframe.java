@@ -409,6 +409,7 @@ public class Protoframe  implements ActionListener {
                     if (JOptionPane.showConfirmDialog(null, "You appear to have not imported a dataset. Do you wish to continue?", "Input error", JOptionPane.YES_NO_OPTION) == 0) {
                         series = new XYSeries(datasetName.getText());
                         coords.addSeries(series);
+                        chartGenerator = ChartFactory.createXYLineChart(chartTitle.getText(), XTitle.getText(), YTitle.getText(), coords);
                     }
                     else throw new RuntimeException();
                 }
